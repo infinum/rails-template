@@ -83,3 +83,22 @@ environment <<~HEREDOC, env: :development
 HEREDOC
 
 require_template('flipper')
+
+# Suppress Puma SignalException
+append_to_file 'config/puma.rb', after: /pidfile ENV.*\n/ do
+  <<~RUBY
+
+    # Suppress SignalException when SIGTERM is received
+    #
+    raise_exception_on_sigterm false
+  RUBY
+end
+
+# Stop crawlers
+append_to_file 'public/robots.txt' do
+  <<-HEREDOC.strip_heredoc
+  # no bot may crawl
+  User-agent: *
+  Disallow: /
+  HEREDOC
+end
