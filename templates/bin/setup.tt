@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'pathname'
+
+APP_ROOT = Pathname.new File.expand_path('..', __dir__)
+
+Dir.chdir APP_ROOT do
+  puts '== Installing dependencies =='
+  system 'gem install bundler --conservative'
+  system 'bundle check || bundle install'
+<% if template_options.uses_node_runtime %>
+  puts '== Installing JS dependencies =='
+  system 'yarn install'
+<% end %>
+  puts '== Installing overcommit =='
+  system 'overcommit --install'
+
+  unless File.exist?('.env')
+    puts "\n== Initialize params =="
+    system! 'cp sample.env .env'
+  end
+
+  puts '== Preparing database =='
+  system 'bin/rake db:setup'
+
+  puts '== Removing old logs and tempfiles =='
+  system 'rm -f log/*'
+  system 'rm -rf tmp/cache'
+end

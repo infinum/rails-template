@@ -11,3 +11,5 @@ copy_file 'docs/development_workflow.md'
 
 create_file 'config/environments/staging.rb', "require_relative 'production'"
 template 'config/database.yml.tt', force: true
+
+template 'bin/setup', force: true
