@@ -119,3 +119,4 @@ end
 
 copy_file '.github/PULL_REQUEST_TEMPLATE.md'
 copy_file '.github/CODEOWNERS'
+template '.dependabot.yml.tt'
