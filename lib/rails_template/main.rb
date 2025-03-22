@@ -15,6 +15,8 @@ create_file 'config/environments/staging.rb', "require_relative 'production'"
 template 'config/database.yml.tt', force: true
 
 template 'sample.env.tt'
-template 'bin/setup', force: true
+template 'bin/setup.tt', force: true
 template 'bin/update.tt'
 chmod 'bin/update', 0o755, verbose: false
+copy_file 'bin/ci-checks'
+chmod 'bin/ci-checks', 0o755, verbose: false
