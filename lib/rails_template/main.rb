@@ -22,7 +22,7 @@ chmod 'bin/update', 0o755, verbose: false
 copy_file 'bin/ci-checks'
 chmod 'bin/ci-checks', 0o755, verbose: false
 
-copy_file '.bundle/ci/config'
+copy_file 'infra/ci/bundle.config'
 copy_file 'config/initializers/bugsnag.rb'
 
 # Remove unused gems
