@@ -105,3 +105,14 @@ end
 
 copy_file '.rubocop.yml'
 copy_file '.overcommit.yml'
+
+append_to_file '.gitignore' do
+  <<-HEREDOC.strip_heredoc
+  .sass-cache
+  powder
+  public/system
+  dump.rdb
+  logfile
+  .DS_Store
+  HEREDOC
+end
