@@ -118,3 +118,4 @@ append_to_file '.gitignore' do
 end
 
 copy_file '.github/PULL_REQUEST_TEMPLATE.md'
+copy_file '.github/CODEOWNERS'
