@@ -9,7 +9,7 @@
 
 ### System
   * Ruby (defined in .ruby-version file)
-<% if options.fetch(:uses_node_runtime) %>  * Node.js (defined in [package.json](https://classic.yarnpkg.com/en/docs/package-json/#toc-engines))
+<% if template_options.uses_node_runtime %>  * Node.js (defined in [package.json](https://classic.yarnpkg.com/en/docs/package-json/#toc-engines))
   * Yarn (defined in [package.json](https://classic.yarnpkg.com/en/docs/package-json/#toc-engines))<% end %>
 
 ## Setup
