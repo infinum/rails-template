@@ -1,37 +1,60 @@
-require "fileutils"
-require "shellwords"
+# frozen_string_literal: true
 
+TEMPLATES_DIR = 'templates'
+REMOTE_REPO_LOCAL_PREFIX = 'rails-template-'
+
+# @return [void]
 def main
-  with_option(:uses_node_runtime, yes?('Will this application need Node runtime? [No]', :green))
-  add_template_repository_to_source_path
-  template "README.md.tt", force: true
+  setup
+
+  require_template('main')
 end
 
-def add_template_repository_to_source_path
-  if __FILE__ =~ %r{\Ahttps?://}
-    require "tmpdir"
-    tempdir = Dir.mktmpdir("rails-template-")
-    source_paths.unshift(tempdir)
+# @return [void]
+def setup
+  @template_root_dir = __FILE__.match?(%r{\Ahttps://}) ? setup_remote_repo : setup_local_repo
 
-    at_exit { FileUtils.remove_entry(tempdir) }
-
-    git clone: [
-      "--quiet",
-      "--depth=1",
-      "https://github.com/vr4b4c/rails-template.git",
-      tempdir
-    ].map(&:shellescape).join(" ")
-
-    branch = __FILE__[%r{rails-template/(.+)/template.rb}, 1]
-
-    Dir.chdir(tempdir) { git checkout: branch } if branch
-  else
-    source_paths.unshift(__dir__)
-  end
+  source_paths.unshift(File.expand_path(TEMPLATES_DIR, template_root_dir))
 end
 
-def with_option(key, value)
-  @options = options.merge(key => value)
+# @return [String]
+def setup_remote_repo
+  require 'tmpdir'
+  require 'fileutils'
+
+  dir = Dir.mktmpdir(REMOTE_REPO_LOCAL_PREFIX)
+  at_exit { FileUtils.remove_entry(dir) }
+  clone_git_repo(dir)
+  dir
 end
+
+# @param [String] destination
+# @return [void]
+def clone_git_repo(destination)
+  require 'shellwords'
+
+  git clone: [
+    '--quiet',
+    '--depth=1',
+    'https://github.com/vr4b4c/rails-template.git',
+    destination
+  ].map(&:shellescape).join(' ')
+end
+
+# @return [String]
+def setup_local_repo = __dir__
+
+self.class.class_eval do
+  # @return [String]
+  attr_reader :template_root_dir
+end
+
+# @param [String] path
+# @return [String]
+def template_file(path) = File.expand_path("lib/rails_template/#{path}.rb", template_root_dir)
+
+# @param [String] path
+# @return [void]
+def require_template(path) = apply(template_file(path))
 
 main
