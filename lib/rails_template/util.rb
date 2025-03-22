@@ -14,6 +14,9 @@ class TemplateOptions
   # @return [String]
   attr_reader :flipper_storage_adapter
 
+  # @return [String]
+  attr_accessor :code_owners
+
   # @param [String] adapter
   # @raise [ArgumentError]
   def flipper_storage_adapter=(adapter)

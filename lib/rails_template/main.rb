@@ -118,5 +118,9 @@ append_to_file '.gitignore' do
 end
 
 copy_file '.github/PULL_REQUEST_TEMPLATE.md'
-copy_file '.github/CODEOWNERS'
+template_options.code_owners = ask(
+  'Who are GitHub code owners (eg. @bob @alice). Code owners:',
+  :green
+)
+template '.github/CODEOWNERS.tt'
 template '.dependabot.yml.tt'
