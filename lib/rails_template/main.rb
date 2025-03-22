@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 require_template('util')
 
 template_options.uses_node_runtime = yes?('Will this application need Node runtime? [No]', :green)
@@ -12,6 +14,7 @@ copy_file 'docs/development_workflow.md'
 create_file 'config/environments/staging.rb', "require_relative 'production'"
 template 'config/database.yml.tt', force: true
 
+template 'sample.env.tt'
 template 'bin/setup', force: true
 template 'bin/update.tt'
 chmod 'bin/update', 0o755, verbose: false
