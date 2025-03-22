@@ -102,3 +102,5 @@ append_to_file 'public/robots.txt' do
   Disallow: /
   HEREDOC
 end
+
+copy_file '.rubocop.yml'
