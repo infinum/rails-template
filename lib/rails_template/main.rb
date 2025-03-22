@@ -104,3 +104,4 @@ append_to_file 'public/robots.txt' do
 end
 
 copy_file '.rubocop.yml'
+copy_file '.overcommit.yml'
