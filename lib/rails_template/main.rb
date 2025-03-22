@@ -81,3 +81,5 @@ environment <<~HEREDOC, env: :development
     Bullet.add_footer = true
   end
 HEREDOC
+
+require_template('flipper')
