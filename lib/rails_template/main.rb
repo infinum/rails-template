@@ -24,3 +24,7 @@ chmod 'bin/ci-checks', 0o755, verbose: false
 
 copy_file '.bundle/ci/config'
 copy_file 'config/initializers/bugsnag.rb'
+
+# Remove unused gems
+%w[jbuilder tzinfo-data byebug web-console importmap-rails brakeman rubocop-rails-omakase turbo-rails
+   stimulus-rails].each { gsub_file('Gemfile', /gem "#{_1}".*\n/, '') }
