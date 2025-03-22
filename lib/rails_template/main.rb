@@ -28,3 +28,46 @@ copy_file 'config/initializers/bugsnag.rb'
 # Remove unused gems
 %w[jbuilder tzinfo-data byebug web-console importmap-rails brakeman rubocop-rails-omakase turbo-rails
    stimulus-rails].each { gsub_file('Gemfile', /gem "#{_1}".*\n/, '') }
+
+# Remove comments from the Gemfile
+gsub_file('Gemfile', /^\s*#+.*\n/, '')
+
+append_to_file 'Gemfile', after: /gem "rails".*\n/ do
+  <<-HEREDOC.strip_heredoc
+
+    gem 'bugsnag'
+    gem 'pry-byebug'
+    gem 'pry-rails'
+    gem 'strong_migrations'
+  HEREDOC
+end
+
+append_to_file 'Gemfile', after: "group :development do\n" do
+  <<-HEREDOC
+  gem 'annotate'
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'bullet'
+  gem 'overcommit', require: false
+  HEREDOC
+end
+
+append_to_file 'Gemfile' do
+  <<-HEREDOC.strip_heredoc
+
+    group :test do
+      gem 'rspec-rails'
+    end
+  HEREDOC
+end
+
+append_to_file 'Gemfile' do
+  <<-HEREDOC.strip_heredoc
+
+    group :ci do
+      gem 'brakeman', require: false
+      gem 'bundler-audit', require: false
+      gem 'rubocop-infinum', require: false
+    end
+  HEREDOC
+end
