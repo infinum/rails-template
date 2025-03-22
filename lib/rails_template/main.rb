@@ -71,3 +71,13 @@ append_to_file 'Gemfile' do
     end
   HEREDOC
 end
+
+environment <<~HEREDOC, env: :development
+  config.action_mailer.delivery_method = :letter_opener
+
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.rails_logger = true
+    Bullet.add_footer = true
+  end
+HEREDOC
