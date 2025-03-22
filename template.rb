@@ -36,7 +36,7 @@ def clone_git_repo(destination)
   git clone: [
     '--quiet',
     '--depth=1',
-    'https://github.com/vr4b4c/rails-template.git',
+    'https://github.com/infinum/rails-template.git',
     destination
   ].map(&:shellescape).join(' ')
 end
