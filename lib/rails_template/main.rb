@@ -116,3 +116,5 @@ append_to_file '.gitignore' do
   .DS_Store
   HEREDOC
 end
+
+copy_file '.github/PULL_REQUEST_TEMPLATE.md'
