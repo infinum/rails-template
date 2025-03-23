@@ -1,0 +1,22 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - '.github/**'
+      - '**.md'
+  push:
+    branches: [main]
+
+jobs:
+  build-test-image-and-run-checks:
+    name: Build test image and run checks
+    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.1.1
+    with:
+      image_target: ci
+      image_tags: rails-template
+      checks_command: |
+        docker run \
+          rails-template \
+          bin/ci-checks

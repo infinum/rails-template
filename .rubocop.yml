@@ -1,5 +1,7 @@
 AllCops:
   NewCops: enable
+  Exclude:
+    - templates/**/*
 
 Style/AccessorGrouping:
   EnforcedStyle: separated
