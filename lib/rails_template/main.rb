@@ -4,7 +4,10 @@ require 'securerandom'
 
 require_template('util')
 
-template_options.uses_node_runtime = yes?('Will this application need Node runtime? [No]', :green)
+template_options.node_version = ask(
+  "Specify Node version. Leave empty if you don't need Node. [Default: empty]",
+  :green
+)
 
 template 'README.md.tt', force: true
 copy_file 'docs/README.md'

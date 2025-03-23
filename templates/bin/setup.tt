@@ -9,7 +9,7 @@ Dir.chdir APP_ROOT do
   puts '== Installing dependencies =='
   system 'gem install bundler --conservative'
   system 'bundle check || bundle install'
-<% if template_options.uses_node_runtime %>
+<% if template_options.uses_node? %>
   puts '== Installing JS dependencies =='
   system 'yarn install'
 <% end %>

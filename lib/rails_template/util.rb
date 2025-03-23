@@ -8,8 +8,8 @@ class TemplateOptions
     ].freeze
   end
 
-  # @return [Boolean]
-  attr_accessor :uses_node_runtime
+  # @return [String]
+  attr_accessor :node_version
 
   # @return [String]
   attr_reader :flipper_storage_adapter
@@ -28,6 +28,9 @@ class TemplateOptions
 
     @flipper_storage_adapter = adapter
   end
+
+  # @return [Boolean]
+  def uses_node? = !node_version.empty?
 end
 
 # @return [TemplateOptions]

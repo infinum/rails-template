@@ -5,7 +5,7 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 2
-<% if template_options.uses_node_runtime %>  - package-ecosystem: "npm"
+<% if template_options.uses_node? %>  - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
