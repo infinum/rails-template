@@ -1,0 +1,86 @@
+name: <%= app_name %>
+
+services:
+  app: &app
+    build:
+      args:
+        RUBY_VERSION: <%= RUBY_VERSION %>
+        <% if template_options.uses_node? %>NODE_VERSION: <%= template_options.node_version %><% end %>
+        DEBIAN_FRONTEND: noninteractive
+      target: dev
+      dockerfile: Dockerfile
+
+  backend: &backend
+    <<: *app
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app:cached
+      - rails_cache:/app/tmp/cache
+      - bundle:/usr/local/bundle
+      - $HOME/.aws:/root/.aws
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: <%= app_name %>
+      DATABASE_PORT: 5432
+      SIDEKIQ_REDIS_URL: redis://redis:6379/
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-0}
+      HISTFILE: /app/log/.bash_history
+      PSQL_HISTFILE: /app/log/.psql_history
+      EDITOR: vim
+    depends_on:
+      - postgres
+      - redis
+
+  runner:
+    <<: *backend
+    command: /bin/bash
+
+  web:
+    <<: *backend
+    command: ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]
+    ports:
+      - "3001:3000"
+
+  sidekiq:
+    <<: *backend
+    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+
+  postgres:
+    image: postgres:13.6
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - .docker/.psqlrc:/root/.psqlrc:ro
+      - ./log:/root/log:cached
+    environment:
+      PSQL_HISTFILE: /root/log/.psql_history
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432"
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      interval: 5s
+
+  redis:
+    image: redis:6.2.4
+    volumes:
+      - redis:/data
+    ports:
+      - "6379"
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  postgres:
+  redis:
+  bundle:
+  rails_cache:
+
+secrets:
+  app-secrets:
+    file: .env

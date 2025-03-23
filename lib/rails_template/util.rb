@@ -17,6 +17,9 @@ class TemplateOptions
   # @return [String]
   attr_accessor :code_owners
 
+  # @return [Boolean]
+  attr_reader :uses_docker
+
   # @param [String] adapter
   # @raise [ArgumentError]
   def flipper_storage_adapter=(adapter)
@@ -35,3 +38,8 @@ end
 
 # @return [TemplateOptions]
 def template_options = @template_options ||= TemplateOptions.new
+
+# @return [Boolean]
+def uses_bootsnap?
+  !options[:skip_bootsnap] && !options[:dev]
+end
