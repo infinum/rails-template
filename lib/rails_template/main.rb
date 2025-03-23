@@ -122,7 +122,7 @@ end
 
 copy_file '.github/PULL_REQUEST_TEMPLATE.md'
 template_options.code_owners = ask(
-  'Who are GitHub code owners (eg. @bob @alice). Code owners:',
+  'Specify GitHub code owners (eg. @bob @alice). [Default: none]',
   :green
 )
 template '.github/CODEOWNERS.tt'
