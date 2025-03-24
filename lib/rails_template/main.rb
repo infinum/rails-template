@@ -125,7 +125,7 @@ template_options.code_owners = ask(
   :green
 )
 template '.github/CODEOWNERS.tt'
-template '.dependabot.yml.tt'
+template '.github/dependabot.yml.tt'
 
 directory 'infra'
 template 'Dockerfile.tt', force: true
