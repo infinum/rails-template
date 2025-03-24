@@ -49,7 +49,7 @@ RUN bundle install && \
 COPY --chown=deploy:deploy . /app
 
 FROM buidler AS deploy-base
-COPY --chown=deploy:deploy --from=deploinfra/bundle/config.deploy ${BUNDLE_PATH}/config
+COPY --chown=deploy:deploy infra/bundle/config.deploy ${BUNDLE_PATH}/config
 COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install && \
     rm -rf ~/.bundle/ ${BUNDLE_PATH}/ruby/*/cache ${BUNDLE_PATH}/ruby/*/bundler/gems/*/.git<% if uses_bootsnap? %> && \
