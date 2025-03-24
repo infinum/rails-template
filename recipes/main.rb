@@ -2,7 +2,7 @@
 
 require 'securerandom'
 
-require_template('util')
+apply_recipe('util')
 
 template_options.node_version = ask(
   "Specify Node version. Leave empty if you don't need Node. [Default: empty]",
@@ -83,7 +83,7 @@ environment <<~HEREDOC, env: :development
   end
 HEREDOC
 
-require_template('flipper')
+apply_recipe('flipper')
 
 # Suppress Puma SignalException
 append_to_file 'config/puma.rb', after: /pidfile ENV.*\n/ do

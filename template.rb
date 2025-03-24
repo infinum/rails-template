@@ -3,11 +3,10 @@
 TEMPLATES_DIR = 'templates'
 REMOTE_REPO_LOCAL_PREFIX = 'rails-template-'
 
-# @return [void]
 def main
   setup
 
-  require_template('main')
+  apply_recipe('main')
 end
 
 # @return [void]
@@ -50,11 +49,11 @@ self.class.class_eval do
 end
 
 # @param [String] path
-# @return [String]
-def template_file(path) = File.expand_path("lib/rails_template/#{path}.rb", template_root_dir)
+# @return [void]
+def apply_recipe(path) = apply(recipe_file(path))
 
 # @param [String] path
-# @return [void]
-def require_template(path) = apply(template_file(path))
+# @return [String]
+def recipe_file(path) = File.expand_path("recipes/#{path}.rb", template_root_dir)
 
 main
