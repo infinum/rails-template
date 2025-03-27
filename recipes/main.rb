@@ -10,9 +10,7 @@ template_options.node_version = ask(
 )
 
 template 'README.md.tt', force: true
-copy_file 'docs/README.md'
-copy_file 'docs/architecture.md'
-copy_file 'docs/development_workflow.md'
+directory 'docs'
 
 create_file 'config/environments/staging.rb', "require_relative 'production'"
 template 'config/database.yml.tt', force: true
@@ -27,7 +25,7 @@ copy_file 'config/initializers/bugsnag.rb'
 
 # Remove unused gems
 %w[jbuilder tzinfo-data byebug web-console importmap-rails brakeman rubocop-rails-omakase turbo-rails
-   stimulus-rails].each { gsub_file('Gemfile', /gem "#{_1}".*\n/, '') }
+   stimulus-rails].each { gsub_file('Gemfile', /gem "#{it}".*\n/, '') }
 
 # Remove comments from the Gemfile
 gsub_file('Gemfile', /^\s*#+.*\n/, '')
@@ -118,14 +116,11 @@ append_to_file '.gitignore' do
   HEREDOC
 end
 
-copy_file '.github/PULL_REQUEST_TEMPLATE.md'
 template_options.code_owners = ask(
   'Specify GitHub code owners (eg. @bob @alice). [Default: none]',
   :green
 )
-template '.github/CODEOWNERS.tt'
-template '.github/dependabot.yml.tt'
-
+directory '.github'
 directory 'infra'
 template 'Dockerfile.tt', force: true
 template 'docker-compose.yml.tt', force: true

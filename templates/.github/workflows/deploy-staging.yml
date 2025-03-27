@@ -1,0 +1,20 @@
+name: Deploy staging
+
+on:
+  workflow_dispatch:
+  push:
+    branches: staging
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: staging
+      # TODO: replace with actual subnet IDs (coordianate with DevOps)
+      subnet_ids: |
+        subnet-0xFD
+        subnet-0xFE
+        subnet-0xFF
+      # TODO: replace with actual security group IDs (coordinate with DevOps)
+      security_group_ids: sg-0xFF
+    secrets: inherit
