@@ -49,6 +49,7 @@ end
 def template_options = @template_options ||= TemplateOptions.new
 
 # @return [Boolean]
-def uses_bootsnap?
-  !options[:skip_bootsnap] && !options[:dev]
-end
+def uses_bootsnap? = !options[:skip_bootsnap] && !options[:dev]
+
+# @return [Boolean]
+def uses_pg? = options[:database] == 'postgresql'

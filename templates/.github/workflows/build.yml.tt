@@ -11,19 +11,19 @@ jobs:
   build-test-image-and-run-checks:
     name: Build test image and run checks
     uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.1.1
-    with:
+    with:<% if uses_pg? %>
       postgres_version: '13.7'
       postgres_user: postgres
-      postgres_password: password
+      postgres_password: password<% end %>
       timeout_minutes: 5
       image_target: ci
       image_tags: <%= app_name %>
       checks_command: |
-        docker run \
+        docker run \<% if uses_pg? %>
           --env DATABASE_HOST=127.0.0.1 \
           --env DATABASE_PORT=5432 \
           --env DATABASE_USERNAME=postgres \
-          --env DATABASE_PASSWORD=password \
+          --env DATABASE_PASSWORD=password \<% end %>
           --network=host \
           --mount type=bind,src="$(pwd)"/sample.env,dst=/app/.env \
           extra \

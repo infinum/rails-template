@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 create_file 'config/environments/staging.rb', "require_relative 'production'"
-template 'config/database.yml.tt', force: true
+template 'config/database.yml.tt', force: true if uses_pg?
 copy_file 'config/initializers/bugsnag.rb'
 append_to_file 'config/puma.rb', after: /pidfile ENV.*\n/ do
   <<~RUBY

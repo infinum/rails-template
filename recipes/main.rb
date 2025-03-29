@@ -3,9 +3,9 @@
 require 'securerandom'
 
 apply_recipe('util')
-apply_recipe('other')
 apply_recipe('dotfiles')
 apply_recipe('bin')
+apply_recipe('other')
 apply_recipe('config')
 apply_recipe('gemfile')
 apply_recipe('flipper')
