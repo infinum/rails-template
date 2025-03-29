@@ -9,12 +9,17 @@ Dir.chdir APP_ROOT do
   puts '== Installing dependencies =='
   system 'gem install bundler --conservative'
   system 'bundle check || bundle install'
+
+  puts '== Setting up AWS profile =='
+  system 'bin/remote configure'
 <% if template_options.uses_node? %>
   puts '== Installing JS dependencies =='
   system 'yarn install'
 <% end %>
   puts '== Installing overcommit =='
-  system 'overcommit --install'
+  system 'bundle exec overcommit --install'
+  system 'bundle exec overcommit --sign'
+  system 'bundle exec overcommit --sign pre-push'
 
   unless File.exist?('.env')
     puts "\n== Initialize params =="
@@ -25,6 +30,5 @@ Dir.chdir APP_ROOT do
   system 'bin/rake db:setup'
 
   puts '== Removing old logs and tempfiles =='
-  system 'rm -f log/*'
-  system 'rm -rf tmp/cache'
+  system 'bin/rails log:clear tmp:clear'
 end

@@ -25,6 +25,7 @@ RUN apt-get update -qq \
     build-essential \
     git \
     curl \
+    unzip \
   && apt-get clean \
   && rm -rf /var/cache/apt/archives /var/lib/apt/lists /tmp/* /var/tmp/* \
   && truncate -s 0 /var/log/*log<% if template_options.uses_node? %>
@@ -34,8 +35,13 @@ RUN git clone https://github.com/nodenv/node-build.git /tmp/node-build \
   && /tmp/node-build/install.sh \
   && rm -rf /tmp/node-build \
   && node-build $NODE_VERSION /build/node \
-  && ln -s /build/node/bin/node /bin/node
-<% end %>
+  && ln -s /build/node/bin/node /bin/node<% end %>
+
+RUN curl https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip -o /tmp/awscliv2.zip \
+  && unzip /tmp/awscliv2.zip -d /tmp \
+  && /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update \
+  && rm -rf /tmp/aws /tmp/awscliv2.zip
+
 FROM builder AS dev
 COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install

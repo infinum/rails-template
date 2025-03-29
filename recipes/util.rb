@@ -7,6 +7,7 @@ class TemplateOptions
       REDIS = 'Redis'
     ].freeze
   end
+  COMMIT_MSG = 'Generated using infinum/rails-template'
 
   # @return [String]
   attr_accessor :node_version
@@ -19,6 +20,9 @@ class TemplateOptions
 
   # @return [Boolean]
   attr_reader :uses_docker
+
+  # @return [String]
+  attr_reader :commit_msg
 
   # @param [String] adapter
   # @raise [ArgumentError]
@@ -34,6 +38,11 @@ class TemplateOptions
 
   # @return [Boolean]
   def uses_node? = !node_version.empty?
+
+  # @param [String] msg
+  def commit_msg=(msg)
+    @commit_msg = msg.empty? ? COMMIT_MSG : msg
+  end
 end
 
 # @return [TemplateOptions]
