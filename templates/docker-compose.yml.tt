@@ -4,8 +4,8 @@ services:
   app: &app
     build:
       args:
-        RUBY_VERSION: <%= RUBY_VERSION %><% if template_options.uses_node? %>
-        NODE_VERSION: <%= template_options.node_version %><% end %>
+        RUBY_VERSION: <%= RUBY_VERSION %><% if uses_node? %>
+        NODE_VERSION: <%= node_version %><% end %>
         DEBIAN_FRONTEND: noninteractive
       target: dev
       dockerfile: Dockerfile

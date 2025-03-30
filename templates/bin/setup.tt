@@ -12,7 +12,7 @@ Dir.chdir APP_ROOT do
 
   puts '== Setting up AWS profile =='
   system 'bin/remote configure'
-<% if template_options.uses_node? %>
+<% if uses_node? %>
   puts '== Installing JS dependencies =='
   system 'yarn install'
 <% end %>

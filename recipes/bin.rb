@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-template_options.node_version = ask(
+self.node_version = ask(
   "Specify node version. Leave empty if you don't need node. [Default: empty]",
   :green
 )

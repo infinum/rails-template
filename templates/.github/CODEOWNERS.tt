@@ -1,1 +1,1 @@
-* <%= template_options.code_owners %>
+* <%= code_owners %>
