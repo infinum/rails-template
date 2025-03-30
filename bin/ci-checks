@@ -5,4 +5,7 @@ set -o pipefail
 set -o nounset
 
 echo "=========== RuboCop ==========="
-bundle exec rubocop 
+bundle exec rubocop
+
+echo "=========== RSpec ==========="
+bundle exec rspec

@@ -12,10 +12,16 @@ on:
 jobs:
   build-test-image-and-run-checks:
     name: Build test image and run checks
-    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.1.1
+    strategy:
+      matrix:
+        rails_version: [7, 8]
+    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@feature/parametrize-concurrency-settings
     with:
+      concurrency_cancel_in_progress: false
       image_target: ci
       image_tags: rails-template
+      image_build_args: |
+        RAILS_VERSION: ${{ matrix.rails_version }}
       checks_command: |
         docker run \
           rails-template \
