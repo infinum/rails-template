@@ -11,7 +11,7 @@ end
 
 # @return [void]
 def setup
-  @template_root_dir = __FILE__.match?(%r{\Ahttps://}) ? setup_remote_repo : setup_local_repo
+  @template_root_dir = __FILE__.start_with?('https://') ? setup_remote_repo : setup_local_repo
 
   source_paths.unshift(File.expand_path(TEMPLATES_DIR, template_root_dir))
 end
