@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'fileutils'
+require 'optparse'
+
+class CLI
+  GITHUB_TEMPLATE_URL = 'https://raw.githubusercontent.com/infinum/rails-template/refs/heads/main/template.rb'
+  LOCAL_PATH = '../template.rb'
+
+  Options = Struct.new(:github, keyword_init: true)
+
+  # @return [void]
+  def run
+    parse_options
+
+    FileUtils.chdir(File.expand_path('../tmp', __dir__)) do
+      FileUtils.rmtree('demo') if File.directory?('demo')
+
+      system("rails new demo --api --minimal -d postgresql -B -m --template #{template}")
+    end
+  end
+
+  private
+
+  # @return [CLI::Options]
+  def options = @options ||= Options.new(github: false)
+
+  # @return [String]
+  def template = options.github ? GITHUB_TEMPLATE_URL : LOCAL_PATH
+
+  # @return [void]
+  def parse_options
+    OptionParser.new do |parser|
+      parser.banner = 'Usage: bin/run [options]'
+
+      parser.on('-g', '--github', 'Use GitHub template.rb URL') { options.github = it }
+      parser.on('-h', '--help', 'Print help') do
+        puts parser
+        exit
+      end
+    end.parse!
+  end
+end
+
+CLI.new.run
