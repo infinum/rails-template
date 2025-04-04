@@ -1,0 +1,154 @@
+name: Build app image and run checks
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      # See: https://hub.docker.com/_/postgres
+      postgres_version:
+        description: Postgres version for running tests (eg. 13.6)
+        required: false
+        type: string
+
+      postgres_user:
+        description: Postgres user
+        required: false
+        type: string
+
+      postgres_password:
+        description: Postgres password
+        required: false
+        type: string
+
+      # See: https://hub.docker.com/_/mysql
+      mysql_version:
+        description: MySQL version for running tests (eg. 9.1). Use root user.
+        required: false
+        type: string
+
+      mysql_root_password:
+        description: MySQL root user password
+        required: false
+        type: string
+
+      runner:
+        description: Set the runner for the workflow (eg. ubuntu-20.04)
+        required: false
+        type: string
+        default: ubuntu-latest
+
+      timeout_minutes:
+        description: Workflow timeout
+        required: false
+        type: number
+        default: 10
+
+      image_target:
+        description: Set the target build stage for the image (eg. test or deploy)
+        required: false
+        type: string
+
+      image_context:
+        description: Docker context
+        required: false
+        type: string
+        default: "."
+
+      image_dockerfile:
+        description: Path to Dockerfile
+        required: false
+        type: string
+
+      image_tags:
+        description: Docker image tags
+        required: false
+        type: string
+
+      image_build_args:
+        description: Docker build arguments
+        required: false
+        type: string
+
+      image_secret_files:
+        description: Docker image build secret files
+        required: false
+        type: string
+
+      # Command examples:
+      #   Basic Docker command
+      #     docker run app bin/ci-checks
+      #   Docker with database connection
+      #     docker run \
+      #       --env DB_HOST=127.0.0.1 \
+      #       --env DB_PORT=5432 \
+      #       --env DB_USERNAME=deploy \
+      #       --env DB_PASSWORD=password \
+      #       --network=host \
+      #       app \
+      #       bin/ci-checks
+      #   Docker with bind mounts
+      #     docker run \
+      #       --mount type=bind,src="$(pwd)"/.sample.env,dst=/app/.env \
+      #       app \
+      #       bin/ci-checsk
+      checks_command:
+        description: Command for running the checks
+        required: true
+        type: string
+
+jobs:
+  build_image:
+    name: Build app image and run checks
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: ${{ inputs.timeout_minutes }}
+
+    services:
+      postgres:
+        image: ${{ inputs.postgres_version && format('postgres:{0}', inputs.postgres_version) }}
+        env:
+          POSTGRES_USER: ${{ inputs.postgres_user }}
+          POSTGRES_PASSWORD: ${{ inputs.postgres_password }}
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      mysql:
+        image: ${{ inputs.mysql_version && format('mysql:{0}', inputs.mysql_version) }}
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ inputs.mysql_root_password }}
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+        ports:
+          - 3306:3306
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build app image
+        uses: docker/build-push-action@v6
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: ${{ inputs.image_context }}
+          file: ${{ inputs.image_dockerfile }}
+          target: ${{ inputs.image_target }}
+          push: false
+          load: true
+          tags: ${{ inputs.image_tags }}
+          build-args: ${{ inputs.image_build_args }}
+          secret-files: ${{ inputs.image_secret_files }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run CI checks
+        run: ${{ inputs.checks_command }}

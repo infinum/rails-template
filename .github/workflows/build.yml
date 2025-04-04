@@ -15,14 +15,21 @@ jobs:
     strategy:
       matrix:
         rails_version: [7, 8]
-    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@feature/parametrize-concurrency-settings
+    uses: ./.github/workflows/build-app-image-and-run-checks.yml
     with:
-      concurrency_cancel_in_progress: false
+      postgres_version: latest
+      postgres_user: postgres
+      postgres_password: password
       image_target: ci
       image_tags: rails-template
       image_build_args: |
         RAILS_VERSION: ${{ matrix.rails_version }}
       checks_command: |
         docker run \
+          --env DB_HOST=127.0.0.1 \
+          --env DB_PORT=5432 \
+          --env DB_USERNAME=deploy \
+          --env DB_PASSWORD=password \
+          --network=host \
           rails-template \
           bin/ci-checks
