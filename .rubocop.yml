@@ -1,10 +1,17 @@
+plugins:
+  - rubocop-rspec
+
 AllCops:
   NewCops: enable
   Exclude:
     - templates/**/*
+    - tmp/**/*
 
 Style/AccessorGrouping:
   EnforcedStyle: separated
 
 Style/Documentation:
   Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 5
