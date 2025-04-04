@@ -1,6 +1,8 @@
 ARG RUBY_VERSION=3.4.1
 FROM ruby:$RUBY_VERSION-slim AS base
 
+ARG DOCKER=1
+ENV DOCKER=$DOCKER
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qq \
   && apt-get install -yq --no-install-recommends \

@@ -50,3 +50,6 @@ def uses_bootsnap? = !options[:skip_bootsnap] && !options[:dev]
 
 # @return [Boolean]
 def uses_pg? = options[:database] == 'postgresql'
+
+# @return [Boolean]
+def in_docker? = ENV.fetch('DOCKER', '') == '1'

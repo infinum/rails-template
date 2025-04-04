@@ -2,7 +2,11 @@
 
 run 'bundle lock --add-platform ruby'
 run 'bundle install'
-run 'docker compose run --build --rm --entrypoint /bin/bash runner -c bin/setup'
+if in_docker?
+  run 'bin/setup'
+else
+  run 'docker compose run --build --rm --entrypoint /bin/bash runner -c bin/setup'
+end
 rails_command 'generate rspec:install'
 rails_command 'generate annotate:install'
 append_to_file 'lib/tasks/auto_annotate_models.rake', after: "its thing in production.\n" do
