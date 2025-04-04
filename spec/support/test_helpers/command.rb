@@ -15,5 +15,10 @@ module TestHelpers
       type code_owners
       type commit_msg
     end
+
+    # @return [void]
+    def debug_output
+      File.write('tmp/debug.log', last_command_started.output)
+    end
   end
 end
