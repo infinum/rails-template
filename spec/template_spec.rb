@@ -11,7 +11,7 @@ RSpec.describe 'Template', type: :aruba do
     end
 
     it 'completes successfully' do
-      expect(last_command_started).to have_output(include_output_string, 'All commit-msg hooks passed')
+      expect(last_command_started).to have_output_on_stdout(include_output_string, 'All commit-msg hooks passed')
     end
   end
 
@@ -21,9 +21,8 @@ RSpec.describe 'Template', type: :aruba do
     end
 
     it 'commits with custom message' do
-      expect(last_command_started).to have_output(include_output_string, 'All commit-msg hooks passed')
-
-      sleep(1)
+      expect(last_command_started).to have_output_on_stdout(include_output_string, 'All commit-msg hooks passed')
+      sleep(2)
       expect(git_open.log.first.message).to eq('Initial commit')
     end
   end
