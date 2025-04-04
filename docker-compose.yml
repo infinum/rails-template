@@ -1,0 +1,15 @@
+name: infinum-rails-template
+
+services:
+  runner:
+    build:
+      args:
+        RAILS_VERSION: 8
+        DOCKER: 1
+      target: base
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    volumes:
+      - .:/rails-template
