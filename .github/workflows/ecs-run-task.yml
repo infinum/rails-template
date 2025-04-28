@@ -1,0 +1,79 @@
+name: Run ECS standalone task
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        type: string
+        description: Used for accessing environment specific secrets and variables
+      aws_region:
+        required: true
+        type: string
+        description: AWS Region
+      image_uri:
+        required: true
+        type: string
+        description: Image URI
+      ecs_cluster:
+        required: true
+        type: string
+        description: ECS Cluster name
+      task_definition_path:
+        required: true
+        type: string
+        description: Path to ECS Task Definition
+      container_name:
+        required: true
+        type: string
+        description: Container name
+      subnet_ids:
+        required: true
+        type: string
+        description: Subnet IDs for ECS task
+      security_group_ids:
+        required: true
+        type: string
+        description: Security Group IDs for ECS task
+      override_container_name:
+        required: false
+        type: string
+        description: Name to override Container name
+      override_container_command:
+        required: false
+        type: string
+        description: Command to override Container command
+      timeout_minutes:
+        required: false
+        type: number
+        default: 10
+        description: Task timeout in minutes
+      assign_public_ip:
+        required: false
+        type: string
+        default: 'ENABLED'
+        description: Assing public IP
+      aws_role_to_assume:
+        required: false
+        type: string
+        description: AWS Role to assume
+
+jobs:
+  run-ecs-task:
+    name: Call reusable Run ECS Task Workflow
+    uses: infinum/devops-pipelines/.github/workflows/ecs-run-task.yml@main
+    with:
+      environment: ${{ inputs.environment}}
+      aws_region: ${{ inputs.aws_region}}
+      image_uri: ${{ inputs.image_uri}}
+      ecs_cluster: ${{ inputs.ecs_cluster}}
+      task_definition_path: ${{ inputs.task_definition_path}}
+      container_name: ${{ inputs.container_name}}
+      subnet_ids: ${{ inputs.subnet_ids}}
+      security_group_ids: ${{ inputs.security_group_ids}}
+      override_container_name: ${{ inputs.override_container_name}}
+      override_container_command: ${{ inputs.override_container_command}}
+      timeout_minutes: ${{ inputs.timeout_minutes}}
+      assign_public_ip: ${{ inputs.assign_public_ip}}
+      aws_role_to_assume: ${{ inputs.aws_role_to_assume}}
+    secrets: inherit
