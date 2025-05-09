@@ -37,7 +37,7 @@ class CLI < Thor
     invoke :configure, []
     task_arn = find_task_arn
 
-    `aws ecs execute-command #{exec_command_args(task_arn, command).join(' ')}`
+    Kernel.exec "aws ecs execute-command #{exec_command_args(task_arn, command).join(' ')}"
   end
 
   desc 'configure', 'Configure AWS profile'
