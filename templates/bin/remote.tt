@@ -16,9 +16,6 @@ class CLI < Thor
   DEFAULT_PROFILE = '<%= app_name %>'
   DEFAULT_COMMAND = '/bin/sh'
 
-  SOURCE_AWS_PROFILE = 'infinum-sso-master'
-  AWS_REGION = 'eu-west-1'
-
   class_option :profile, default: DEFAULT_PROFILE
   class_option :debug, aliases: :d, type: :boolean
 
@@ -47,7 +44,7 @@ class CLI < Thor
     if aws_profile_exists?
       puts "AWS profile '#{options[:profile]}' is already configured" if debug?
     else
-      fail_with "AWS profile is not configured"
+      fail_with "To run commands you need to configure AWS profile. Please configure #{options[:profile]} profile"
     end
   end
 
