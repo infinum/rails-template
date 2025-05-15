@@ -16,10 +16,6 @@ class CLI < Thor
   DEFAULT_PROFILE = '<%= app_name %>'
   DEFAULT_COMMAND = '/bin/sh'
 
-  SOURCE_AWS_PROFILE = 'infinum-sso-master'
-  AWS_REGION = 'eu-west-1'
-  ROLE_ARN = 'arn:aws:iam::702192518610:role/SSODeveloperRole'
-
   class_option :profile, default: DEFAULT_PROFILE
   class_option :debug, aliases: :d, type: :boolean
 
@@ -34,24 +30,23 @@ class CLI < Thor
 
   desc 'exec COMMAND', "Execute COMMAND in container. Default command is #{DEFAULT_COMMAND}"
   def exec(command = DEFAULT_COMMAND)
-    invoke :configure, []
+    verify_setup
     task_arn = find_task_arn
 
     Kernel.exec "aws ecs execute-command #{exec_command_args(task_arn, command).join(' ')}"
   end
 
-  desc 'configure', 'Configure AWS profile'
-  def configure
+  private
+
+  def verify_setup
     check_aws_cli_version!
 
     if aws_profile_exists?
       puts "AWS profile '#{options[:profile]}' is already configured" if debug?
     else
-      configure_aws_profile
+      fail_with "To run commands you need to configure AWS profile. Please configure #{options[:profile]} profile"
     end
   end
-
-  private
 
   def check_aws_cli_version!
     version = `aws --version #{'--debug' if debug?}`
@@ -65,19 +60,6 @@ class CLI < Thor
     fail_with 'Cannot list AWS profiles' unless $CHILD_STATUS.success?
 
     profiles.split("\n").include?(options[:profile])
-  end
-
-  def configure_aws_profile
-    puts <<~INFO
-      AWS profile '#{options[:profile]}' does not exist, it will now be configured.
-      NB that it requires infinum-sso-master profile to be setup.
-    INFO
-
-    `
-      aws configure set source_profile #{SOURCE_AWS_PROFILE} --profile #{options[:profile]} #{'--debug' if debug?}
-      aws configure set region #{AWS_REGION} --profile #{options[:profile]} #{'--debug' if debug?}
-      aws configure set role_arn #{ROLE_ARN} --profile #{options[:profile]} #{'--debug' if debug?}
-    `
   end
 
   def find_task_arn
