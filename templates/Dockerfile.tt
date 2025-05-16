@@ -54,7 +54,7 @@ RUN bundle install && \
     bundle exec bootsnap precompile --gemfile<% end %>
 COPY --chown=deploy:deploy . /app
 
-FROM buidler AS deploy-base
+FROM builder AS deploy-base
 COPY --chown=deploy:deploy infra/bundle/config.deploy ${BUNDLE_PATH}/config
 COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install && \
