@@ -16,4 +16,4 @@ append_to_file 'lib/tasks/auto_annotate_models.rake', '# rubocop:enable Metrics/
 rails_command 'generate strong_migrations:install'
 run 'rails g flipper:setup' if flipper_storage_adapter == FlipperStorageAdapters::ACTIVE_RECORD
 copy_file 'config/initializers/flipper.rb'
-run 'bundle exec rubocop -A || echo'
+run 'bundle exec rubocop -A'
