@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 self.flipper_storage_adapter = ask(
-  'Will you use ActiveRecord or Redis storage adapter for Flipper? [Default: ActiveRecord]', :green
+  'Specify storage adapter for Flipper (ActiveRecord, Redis). [Default: ActiveRecord]', :green
 )
 
 append_to_file 'Gemfile', after: /gem "rails".*\n/ do
