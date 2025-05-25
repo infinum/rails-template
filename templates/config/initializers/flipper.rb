@@ -10,7 +10,7 @@ Flipper::UI.configure do |config|
     config.show_feature_description_in_list = true
   end
 
-  Flipper::AuthenticatedApp = Flipper::UI.app(Flipper.instance) do |builder|
+  Flipper::AuthenticatedApp = Flipper::UI.app do |builder|
     builder.use Rack::Auth::Basic, "Flipper Admin" do |username, password|
       flipper_username = ENV.fetch('FLIPPER_USERNAME')
       flipper_password = ENV.fetch('FLIPPER_PASSWORD')
