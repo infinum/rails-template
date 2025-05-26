@@ -34,7 +34,7 @@ jobs:
     name: Send Slack notification
     uses: infinum/devops-pipelines/.github/workflows/slack-notification.yml@v1.12.7
     needs: build-test-image-and-run-checks
-    if: ${{ always() }}
+    if: ${{ failure() && needs.build-test-image-and-run-checks.result == 'failure' }}
     with:
       outcome: ${{ needs.build-test-image-and-run-checks.result }}
       channel: product-<%= app_name %>-notifications
