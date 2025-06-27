@@ -13,25 +13,19 @@ append_to_file 'Gemfile', after: /gem "rails".*\n/ do
     gem 'strong_migrations'
   HEREDOC
 end
-append_to_file 'Gemfile' do
+append_to_file 'Gemfile', after: /group :development do\n/ do
   <<~HEREDOC
-
-    group :development do
-      gem 'annotate'
-      gem 'better_errors'
-      gem 'binding_of_caller'
-      gem 'bullet'
-      gem 'overcommit', require: false
-      gem 'thor', require: false
-    end
+    gem 'annotate'
+    gem 'better_errors'
+    gem 'binding_of_caller'
+    gem 'bullet'
+    gem 'overcommit', require: false
+    gem 'thor', require: false
   HEREDOC
 end
-append_to_file 'Gemfile' do
+append_to_file 'Gemfile', after: /group :test do\n/ do
   <<~HEREDOC
-
-    group :test do
-      gem 'rspec-rails'
-    end
+    gem 'rspec-rails'
   HEREDOC
 end
 append_to_file 'Gemfile' do
