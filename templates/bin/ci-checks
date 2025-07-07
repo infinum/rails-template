@@ -21,3 +21,6 @@ time bundle exec rails db:test:prepare
 
 echo "=========== rspec ==========="
 time bundle exec rspec --force-color
+
+echo "=========== license_finder ==========="
+time bundle exec license_finder
