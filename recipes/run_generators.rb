@@ -14,7 +14,14 @@ append_to_file 'lib/tasks/auto_annotate_models.rake', after: "its thing in produ
 end
 append_to_file 'lib/tasks/auto_annotate_models.rake', '# rubocop:enable Metrics/BlockLength, Rails/RakeEnvironment'
 rails_command 'generate strong_migrations:install'
+run 'rails g flipper:setup' if flipper_storage_adapter == FlipperStorageAdapters::ACTIVE_RECORD
+copy_file 'config/initializers/flipper.rb'
 run 'bundle exec rubocop -A --fail-level=error --format=quiet'
+if in_docker?
+  run 'rails db:migrate'
+else
+  run "docker compose run --rm runner bash -c 'bundle exec rails db:migrate'"
+end
 
 # add a list of permitted licenses to license_finder configuration fileAdd commentMore actions
 run 'bundle exec license_finder permitted_licenses add "New BSD" "Simplified BSD" ruby "2-clause BSDL" ' \
