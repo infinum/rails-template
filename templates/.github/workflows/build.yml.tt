@@ -1,5 +1,9 @@
 name: Build
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   workflow_dispatch:
   pull_request:
@@ -10,7 +14,7 @@ on:
 jobs:
   build-test-image-and-run-checks:
     name: Build test image and run checks
-    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.1.1
+    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.1.2
     with:<% if uses_pg? %>
       postgres_version: '13.7'
       postgres_user: postgres
