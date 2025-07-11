@@ -14,7 +14,7 @@ append_to_file 'Gemfile', after: /gem "rails".*\n/ do
   HEREDOC
 end
 
-def development_group_gems
+development_group_gems =
   <<~HEREDOC
     gem 'annotate'
     gem 'better_errors'
@@ -23,7 +23,6 @@ def development_group_gems
     gem 'overcommit', require: false
     gem 'thor', require: false
   HEREDOC
-end
 
 if File.foreach('Gemfile').grep(/group :development do/).any?
   append_to_file 'Gemfile', after: /group :development do\n/ do
