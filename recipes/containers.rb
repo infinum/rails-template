@@ -2,4 +2,4 @@
 
 directory 'infra'
 template 'Dockerfile.tt', force: true
-template 'docker-compose.yml.tt', force: true
+template 'compose.yml.tt', force: true
