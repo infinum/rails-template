@@ -3,9 +3,6 @@ name: Build
 on:
   workflow_dispatch:
   pull_request:
-    paths-ignore:
-      - '.github/**'
-      - '**.md'
   push:
     branches: [main]
 
