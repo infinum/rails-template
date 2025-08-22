@@ -30,6 +30,33 @@ Run:
 bundle exec rspec
 ```
 
+## Developing in containers
+
+To prepare the local environment for development on containers, complete the development environment setup
+procedure (`bin/setup`) and initialize the volumes with
+
+```bash
+docker compose run --rm runner bash -c "bundle install"
+```
+
+To start the development service stack, run
+
+```bash
+docker compose up
+```
+
+To stop development service stack, run
+
+```bash
+docker compose down
+```
+
+To interact with the backend container, run
+
+```bash
+docker compose run --rm runner
+```
+
 ## PR Workflow
 
 ### Commits
