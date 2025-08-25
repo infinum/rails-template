@@ -11,6 +11,7 @@ append_to_file 'Gemfile', after: /gem "rails".*\n/ do
     gem 'pry-byebug'
     gem 'pry-rails'
     gem 'strong_migrations'
+    gem 'sidekiq', '~> 8.0'
   HEREDOC
 end
 
@@ -39,18 +40,19 @@ else
   end
 end
 
+test_gems =
+  <<~HEREDOC
+    gem 'rspec-rails'
+    gem 'rspec-sidekiq'
+  HEREDOC
 if File.foreach('Gemfile').grep(/group :test do/).any?
-  append_to_file 'Gemfile', after: /group :test do\n/ do
-    <<~HEREDOC
-      gem 'rspec-rails'
-    HEREDOC
-  end
+  append_to_file 'Gemfile', test_gems, after: /group :test do\n/
 else
   append_to_file 'Gemfile' do
     <<~HEREDOC
 
       group :test do
-        gem 'rspec-rails'
+        #{test_gems}
       end
     HEREDOC
   end
