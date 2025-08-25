@@ -9,4 +9,8 @@ Sidekiq::Web.use Rack::Auth::Basic do |username, password|
 
   ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(username), sidekiq_username) &
     ActiveSupport::SecurityUtils.secure_compare(::Digest::SHA256.hexdigest(password), sidekiq_password)
-end
+end<% if api_mode? %>
+
+# https://github.com/sidekiq/sidekiq/wiki/Monitoring#rack-session-and-protection-against-web-attacks
+Sidekiq::Web.use ActionDispatch::Cookies
+Sidekiq::Web.use Rails.application.config.session_store, Rails.application.config.session_options<% end %>
