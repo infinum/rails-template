@@ -17,7 +17,7 @@ class CLI
     FileUtils.chdir(File.expand_path('../tmp', __dir__)) do
       FileUtils.rmtree('demo') if File.directory?('demo')
 
-      system("rails new demo --api --minimal -d postgresql -B -m --template #{template}")
+      system("rails new demo --api --skip-bundle --database=postgresql --template=#{template}")
     end
   end
 
