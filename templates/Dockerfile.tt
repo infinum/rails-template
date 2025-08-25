@@ -38,8 +38,7 @@ ARG NODE_VERSION=<%= node_version %>
 RUN git clone https://github.com/nodenv/node-build.git /tmp/node-build \
   && /tmp/node-build/install.sh \
   && rm -rf /tmp/node-build \
-  && node-build $NODE_VERSION /build/node \
-  && ln -s /build/node/bin/node /bin/node<% end %>
+  && node-build $NODE_VERSION /usr/local<% end %>
 
 RUN curl https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip -o /tmp/awscliv2.zip \
   && unzip /tmp/awscliv2.zip -d /tmp \
@@ -69,7 +68,7 @@ FROM base AS deploy
 ARG RAILS_ENV=production
 COPY --chown=deploy:deploy --from=deploy-base ${BUNDLE_PATH} ${BUNDLE_PATH}<% if uses_bootsnap? %>
 COPY --chown=deploy:deploy --from=deploy-base /app/tmp/cache/bootsnap /app/tmp/cache/bootsnap<% end %><% if uses_node? %>
-COPY --chown=deploy:deploy --from=builder /build/node/bin/node /bin/node<% end %>
+COPY --chown=deploy:deploy --from=builder /usr/local/bin/node /usr/local/bin/node<% end %>
 COPY --chown=deploy:deploy . /app
 RUN --mount=type=secret,id=app-secrets,target=.env \
   bundle exec rails assets:precompile<% if uses_bootsnap? %>
