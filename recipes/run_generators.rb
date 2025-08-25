@@ -8,6 +8,8 @@ else
   run 'docker compose run --build --rm --entrypoint /bin/bash runner -c bin/setup'
 end
 rails_command 'generate rspec:install'
+gsub_file! '.rspec', 'require spec_helper', 'require rails_helper'
+gsub_file! 'spec/rails_helper.rb', /# (Rails.root.glob.*)/, '\1'
 rails_command 'generate annotate:install'
 append_to_file 'lib/tasks/auto_annotate_models.rake', after: "its thing in production.\n" do
   "# rubocop:disable Metrics/BlockLength, Rails/RakeEnvironment\n"
