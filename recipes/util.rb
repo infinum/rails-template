@@ -49,6 +49,9 @@ end
 def uses_bootsnap? = !options[:skip_bootsnap] && !options[:dev]
 
 # @return [Boolean]
+def api_mode? = options[:api]
+
+# @return [Boolean]
 def uses_pg? = options[:database] == 'postgresql'
 
 # @return [Boolean]
