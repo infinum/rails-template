@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-copy_file 'config/initializers/sidekiq.rb'
+template 'config/initializers/sidekiq.rb.tt'
 copy_file 'spec/support/sidekiq.rb'
 copy_file 'config/sidekiq.yml'
 append_to_file 'config/routes.rb', after: 'Rails.application.routes.draw do' do
@@ -11,13 +11,11 @@ append_to_file 'config/routes.rb', after: 'Rails.application.routes.draw do' do
 end
 
 if api_mode?
-  append_to_file 'config/application.rb', after: 'config.api_only = true' do
+  append_to_file 'config/application.rb', after: "config.api_only = true\n" do
     <<-HEREDOC
 
-    # Configure session middleware for Sidekiq in API mode
+    # https://github.com/sidekiq/sidekiq/wiki/Monitoring#rack-session-and-protection-against-web-attacks
     config.session_store :cookie_store, key: "_#{app_name}_session"
-    config.middleware.use ActionDispatch::Cookies
-    config.middleware.use config.session_store, config.session_options
     HEREDOC
   end
 end
