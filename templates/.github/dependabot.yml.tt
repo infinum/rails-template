@@ -1,14 +1,19 @@
 version: 2
 updates:
-  - package-ecosystem: 'github-actions'
-    directory: '/'
-    schedule:
-      interval: 'weekly'
   - package-ecosystem: "bundler"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 2<% if uses_node? %>
+    open-pull-requests-limit: 2
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 2
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'<% if uses_node? %>
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
