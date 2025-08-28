@@ -16,7 +16,7 @@ end
 
 development_group_gems =
   <<~HEREDOC
-    gem 'annotate'
+    gem 'annotaterb'
     gem 'better_errors'
     gem 'binding_of_caller'
     gem 'bullet'

@@ -10,11 +10,8 @@ end
 rails_command 'generate rspec:install'
 gsub_file! '.rspec', 'require spec_helper', 'require rails_helper'
 uncomment_lines 'spec/rails_helper.rb', /Rails.root.glob.*/
-rails_command 'generate annotate:install'
-append_to_file 'lib/tasks/auto_annotate_models.rake', after: "its thing in production.\n" do
-  "# rubocop:disable Metrics/BlockLength, Rails/RakeEnvironment\n"
-end
-append_to_file 'lib/tasks/auto_annotate_models.rake', '# rubocop:enable Metrics/BlockLength, Rails/RakeEnvironment'
+rails_command 'generate annotate_rb:install'
+gsub_file! '.annotaterb.yml', ':exclude_tests: false', ':exclude_tests: true'
 rails_command 'generate strong_migrations:install'
 run 'rails g flipper:setup' if flipper_storage_adapter == FlipperStorageAdapters::ACTIVE_RECORD
 copy_file 'config/initializers/flipper.rb'
