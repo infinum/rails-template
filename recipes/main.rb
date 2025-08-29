@@ -14,3 +14,9 @@ apply_recipe('containers')
 apply_recipe('license_finder')
 apply_recipe('run_generators')
 apply_recipe('commit')
+
+puts "\n\n"
+puts '***********************************************************'
+puts '* IMPORTANT: Follow post-apply instructions in SETUP.md *'
+puts '***********************************************************'
+puts "\n\n"

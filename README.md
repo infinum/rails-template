@@ -22,6 +22,18 @@ To setup development environment run `bin/setup`.
 rails new myapp -m https://raw.githubusercontent.com/infinum/rails-template/refs/heads/main/template.rb
 ```
 
+## Architecture
+This project aims to provide [Rails Application Template](https://guides.rubyonrails.org/rails_application_templates.html) for initializing a Rails application with the Infinum Team Rails standard settings. Entrypoint file `template.rb` is evaluated in the context of a Rails App generator, which itself is a `Thor::Group`. It
+
+- clones this repository in a temporary directory
+- adds `templates/` directory to the list of `source_paths` ([docs](https://guides.rubyonrails.org/rails_application_templates.html#advanced-usage))
+- applies the `recipes/main.rb` recipe
+
+A recipe is a file that groups related operations for a Rails Application Template.
+
+### Post-apply instructions
+In some situations (e.g., lack of information, complex configuration structure), it's more efficient for a user to manually define the configuration. Use `templates/SETUP.md` to convey the instructions that the application development team should complete after applying the template.
+
 ## Contributing
 
 We believe that the community can help us improve and build better a product.
