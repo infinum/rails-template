@@ -19,6 +19,7 @@ Dir.chdir APP_ROOT do
   puts '== Installing overcommit =='
   system 'bundle exec overcommit --install'
   system 'bundle exec overcommit --sign'
+  system 'bundle exec overcommit --sign pre-commit'
   system 'bundle exec overcommit --sign pre-push'
 
   unless File.exist?('.env')

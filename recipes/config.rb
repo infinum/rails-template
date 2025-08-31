@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+template 'config/database.yml.tt', force: true if uses_pg?
 create_file 'config/environments/staging.rb', "require_relative 'production'"
 copy_file 'config/initializers/bugsnag.rb'
 append_to_file 'config/puma.rb', after: /pidfile ENV.*\n/ do
