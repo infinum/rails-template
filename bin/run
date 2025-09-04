@@ -16,8 +16,11 @@ class CLI
 
     FileUtils.chdir(File.expand_path('../tmp', __dir__)) do
       FileUtils.rmtree('demo') if File.directory?('demo')
+      if system('docker volume inspect demo_postgres > /dev/null 2>&1')
+        system('docker volume rm demo_postgres > /dev/null 2>&1')
+      end
 
-      system("rails new demo --api --skip-bundle --database=postgresql --template=#{template}")
+      system("rails new demo --api --database=postgresql --template=#{template}")
     end
   end
 
