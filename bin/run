@@ -15,12 +15,12 @@ class CLI
     parse_options
 
     FileUtils.chdir(File.expand_path('../tmp', __dir__)) do
-      FileUtils.rmtree('demo') if File.directory?('demo')
-      if system('docker volume inspect demo_postgres > /dev/null 2>&1')
-        system('docker volume rm demo_postgres > /dev/null 2>&1')
+      if File.directory?('demo')
+        system('docker compose -f demo/compose.yml run --rm runner bundle exec rake db:drop')
+        FileUtils.rmtree('demo')
       end
 
-      system("rails new demo --api --database=postgresql --template=#{template}")
+      system("rails new demo --api --database=postgresql --template=#{template} --force")
     end
   end
 
