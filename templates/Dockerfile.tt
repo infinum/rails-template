@@ -50,7 +50,7 @@ COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install
 
 FROM builder AS ci
-COPY --chown=deploy:deploy infra/ci/bundle.config ${BUNDLE_PATH}/config
+COPY --chown=deploy:deploy infra/bundle/config.ci ${BUNDLE_PATH}/config
 COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install && \
     rm -rf ~/.bundle/ ${BUNDLE_PATH}/ruby/*/cache ${BUNDLE_PATH}/ruby/*/bundler/gems/*/.git<% if uses_bootsnap? %> && \
