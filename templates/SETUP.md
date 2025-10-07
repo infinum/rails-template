@@ -24,14 +24,14 @@ on:
       - completed
 ```
 
-**Be aware** that different triggers set `GITHUB_SHA` and `GITHUB_REF` values differently in the executing action. To prevent issues with incorrect code revision being checked out for the common `workflow_run` trigger a default way to determine the correct SHA to checkout is defined in `.github/workflows/deploy.yml` :
+**Be aware** that different triggers set `GITHUB_SHA` and `GITHUB_REF` values differently in the executing action. To prevent issues with incorrect code revision being checked out for the common `workflow_run` trigger, a default way to determine the correct SHA to checkout is defined in `.github/workflows/deploy-<env>.yml`:
 
 ```yaml
 jobs:
-  context:
-    name: Setup context
-    outputs:
-      git_revision: ${{ github.event.workflow_run.head_sha || github.sha }}
+  deploy:
+    uses: ./.github/workflows/deploy.yml
+    with:
+      git_ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 ```
 
 This value is then passed as an explicit `git_ref` to the build and deployment reusable actions.
