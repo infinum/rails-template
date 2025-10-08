@@ -15,6 +15,10 @@ on:
         description:  List of security group IDs for the ECS task
         required: true
         type: string
+      git_ref:
+        description: Git revision to checkout for build and deployment steps. Also used as image tag.
+        required: true
+        type: string
 
 jobs:
   context:
@@ -38,30 +42,31 @@ jobs:
 
   build-deploy-image-and-push:
     name: Build deploy image and push to registry
-    uses: infinum/devops-pipelines/.github/workflows/docker-build-push.yml@v1.13.0
+    uses: infinum/devops-pipelines/.github/workflows/docker-build-push.yml@v3.0.0
     needs: context
     with:
       environment: ${{ inputs.environment }}
       cloud: AWS
-      tags: ${{ needs.context.outputs.aws_ecr_uri }}:${{ github.sha }}
+      tags: ${{ needs.context.outputs.aws_ecr_uri }}:${{ inputs.git_ref }}
       aws_region: ${{ needs.context.outputs.aws_region }}
       aws_ecr_region: ${{ needs.context.outputs.aws_ecr_region }}
       aws_ecr_account_id: ${{ needs.context.outputs.aws_ecr_account_id }}
       target: deploy
       secret_files: |
         app-secrets=sample.env
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   deploy-migrations:
     name: Deploy migrations
-    uses: infinum/devops-pipelines/.github/workflows/ecs-run-task.yml@v1.13.0
+    uses: infinum/devops-pipelines/.github/workflows/ecs-run-task.yml@v3.0.0
     needs: [context, build-deploy-image-and-push]
     with:
       environment: ${{ inputs.environment }}
       aws_region: ${{ needs.context.outputs.aws_region }}
       ecs_cluster: ${{ needs.context.outputs.aws_ecs_cluster }}
       task_definition_path: infra/ecs/task-definition-app-${{ inputs.environment }}.json
-      image_uri: ${{ needs.context.outputs.aws_ecr_uri }}:${{ github.sha }}
+      image_uri: ${{ needs.context.outputs.aws_ecr_uri }}:${{ inputs.git_ref }}
       container_name: <%= app_name %>
       override_container_name: <%= app_name %>
       override_container_command: |
@@ -71,34 +76,37 @@ jobs:
         db:migrate
       subnet_ids: ${{ inputs.subnet_ids }}
       security_group_ids: ${{ inputs.security_group_ids }}
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   deploy-backend:
     name: Deploy backend
-    uses: infinum/devops-pipelines/.github/workflows/deploy-ecs-task-definition.yml@v1.13.0
+    uses: infinum/devops-pipelines/.github/workflows/deploy-ecs-task-definition.yml@v3.0.0
     needs: [context, deploy-migrations]
     with:
-      image_uri: ${{ needs.context.outputs.aws_ecr_uri }}:${{ github.sha }}
+      image_uri: ${{ needs.context.outputs.aws_ecr_uri }}:${{ inputs.git_ref }}
       environment: ${{ inputs.environment }}
       aws_region: ${{ needs.context.outputs.aws_region }}
       ecs_cluster: ${{ needs.context.outputs.aws_ecs_cluster }}
       ecs_service: <%= app_name %>
       task_def_path: infra/ecs/task-definition-app-${{ inputs.environment }}.json
       container_name: <%= app_name %>
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   deploy-background-job-processor:
     name: Deploy background job processor
-    uses: infinum/devops-pipelines/.github/workflows/deploy-ecs-task-definition.yml@v1.13.0
+    uses: infinum/devops-pipelines/.github/workflows/deploy-ecs-task-definition.yml@v3.0.0
     needs: [context, deploy-migrations]
     with:
-      image_uri: ${{ needs.context.outputs.aws_ecr_uri }}:${{ github.sha }}
+      image_uri: ${{ needs.context.outputs.aws_ecr_uri }}:${{ inputs.git_ref }}
       environment: ${{ inputs.environment }}
       aws_region: ${{ needs.context.outputs.aws_region }}
       ecs_cluster: ${{ needs.context.outputs.aws_ecs_cluster }}
       ecs_service: <%= app_name %>-sidekiq
       task_def_path: infra/ecs/task-definition-sidekiq-${{ inputs.environment }}.json
       container_name: <%= app_name %>-sidekiq
+      git_ref: ${{ inputs.git_ref }}
     secrets: inherit
 
   deployment-status:
