@@ -82,8 +82,8 @@ COPY --chown=deploy:deploy --from=deploy-base ${BUNDLE_PATH} ${BUNDLE_PATH}<% if
 COPY --chown=deploy:deploy --from=deploy-base /app/tmp/cache/bootsnap /app/tmp/cache/bootsnap<% end %>
 COPY --chown=deploy:deploy --from=deploy-base /app /app<% if uses_bootsnap? %>
 RUN bundle exec bootsnap precompile --gemfile app/ lib/ \
-  && chown -R deploy:deploy /app/tmp
-<% end %>
+  && chown -R deploy:deploy /app/tmp<% end %>
+
 RUN mkdir private && echo '{"revision":"'$COMMIT_SHA'","timestamp":"'$(date --iso-8601=seconds)'"}' > private/version.json
 
 USER deploy
