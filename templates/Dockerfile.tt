@@ -81,8 +81,8 @@ COPY --chown=deploy:deploy --from=deploy-base ${BUNDLE_PATH} ${BUNDLE_PATH}<% if
 COPY --chown=deploy:deploy --from=deploy-base /app/tmp/cache/bootsnap /app/tmp/cache/bootsnap<% end %>
 COPY --chown=deploy:deploy --from=deploy-base /app /app<% if uses_bootsnap? %>
 RUN bundle exec bootsnap precompile --gemfile app/ lib/ \
-  && chown -R deploy:deploy /app/tmp
-<% end %>
+  && chown -R deploy:deploy /app/tmp<% end %>
+
 USER deploy
 ENV RAILS_LOG_TO_STDOUT=true
 
