@@ -3,9 +3,9 @@ FROM ruby:$RUBY_VERSION-slim-trixie@sha256:0d2adfa1930d67ee79e5d16c3610f4fbed43c
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update -qq \
   && apt-get install -yq --no-install-recommends \
-    libpq-dev \
-    libjemalloc2 \
-    libyaml-dev \
+  libpq-dev \
+  libjemalloc2 \
+  libyaml-dev \
   && apt-get clean \
   && ln -s /usr/lib/$(uname -m)-linux-gnu/libjemalloc.so.2 /usr/local/lib/libjemalloc.so \
   && rm -rf /var/cache/apt/archives /var/lib/apt/lists /tmp/* /var/tmp/* \
@@ -26,24 +26,29 @@ WORKDIR /app
 FROM base AS builder
 RUN apt-get update -qq \
   && apt-get install -yq --no-install-recommends \
-    build-essential \
-    git \
-    curl \
-    unzip \
+  build-essential \
+  git \
+  curl \
+  unzip \
   && apt-get clean \
   && rm -rf /var/cache/apt/archives /var/lib/apt/lists /tmp/* /var/tmp/* \
-  && truncate -s 0 /var/log/*log<% if uses_node? %>
+  && truncate -s 0 /var/log/*log
+
+RUN curl https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip -o /tmp/awscliv2.zip \
+  && unzip /tmp/awscliv2.zip -d /tmp \
+  && /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update \
+  && rm -rf /tmp/aws /tmp/awscliv2.zip<% if uses_node? %>
 
 ARG NODE_VERSION=<%= node_version %>
 RUN git clone https://github.com/nodenv/node-build.git /tmp/node-build \
   && /tmp/node-build/install.sh \
   && rm -rf /tmp/node-build \
-  && node-build $NODE_VERSION /usr/local<% end %>
+  && node-build $NODE_VERSION /usr/local
 
-RUN curl https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip -o /tmp/awscliv2.zip \
-  && unzip /tmp/awscliv2.zip -d /tmp \
-  && /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update \
-  && rm -rf /tmp/aws /tmp/awscliv2.zip
+RUN npm install -g yarn
+
+COPY --chown=deploy:deploy package*.json ./
+RUN yarn install<% end %>
 
 FROM builder AS dev
 COPY --chown=deploy:deploy Gemfile* /app/
@@ -53,26 +58,29 @@ FROM builder AS ci
 COPY --chown=deploy:deploy infra/bundle/config.ci ${BUNDLE_PATH}/config
 COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install && \
-    rm -rf ~/.bundle/ ${BUNDLE_PATH}/ruby/*/cache ${BUNDLE_PATH}/ruby/*/bundler/gems/*/.git<% if uses_bootsnap? %> && \
-    bundle exec bootsnap precompile --gemfile<% end %>
+  rm -rf ~/.bundle/ ${BUNDLE_PATH}/ruby/*/cache ${BUNDLE_PATH}/ruby/*/bundler/gems/*/.git<% if uses_bootsnap? %> && \
+  bundle exec bootsnap precompile --gemfile<% end %>
 COPY --chown=deploy:deploy . /app
 
 FROM builder AS deploy-base
 COPY --chown=deploy:deploy infra/bundle/config.deploy ${BUNDLE_PATH}/config
 COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install && \
-    rm -rf ~/.bundle/ ${BUNDLE_PATH}/ruby/*/cache ${BUNDLE_PATH}/ruby/*/bundler/gems/*/.git<% if uses_bootsnap? %> && \
-    bundle exec bootsnap precompile --gemfile<% end %>
+  rm -rf ~/.bundle/ ${BUNDLE_PATH}/ruby/*/cache ${BUNDLE_PATH}/ruby/*/bundler/gems/*/.git<% if uses_bootsnap? %> && \
+  bundle exec bootsnap precompile --gemfile<% end %>
+
+COPY --chown=deploy:deploy . /app<% if uses_node? %>
+COPY --chown=deploy:deploy --from=builder /app/node_modules /app/node_modules<% end %>
+ARG RAILS_ENV=production
+RUN --mount=type=secret,id=app-secrets,target=.env \
+  bundle exec rails assets:precompile
 
 FROM base AS deploy
 ARG RAILS_ENV=production
 ARG COMMIT_SHA
 COPY --chown=deploy:deploy --from=deploy-base ${BUNDLE_PATH} ${BUNDLE_PATH}<% if uses_bootsnap? %>
-COPY --chown=deploy:deploy --from=deploy-base /app/tmp/cache/bootsnap /app/tmp/cache/bootsnap<% end %><% if uses_node? %>
-COPY --chown=deploy:deploy --from=builder /usr/local/bin/node /usr/local/bin/node<% end %>
-COPY --chown=deploy:deploy . /app
-RUN --mount=type=secret,id=app-secrets,target=.env \
-  bundle exec rails assets:precompile<% if uses_bootsnap? %>
+COPY --chown=deploy:deploy --from=deploy-base /app/tmp/cache/bootsnap /app/tmp/cache/bootsnap<% end %>
+COPY --chown=deploy:deploy --from=deploy-base /app /app<% if uses_bootsnap? %>
 RUN bundle exec bootsnap precompile --gemfile app/ lib/ \
   && chown -R deploy:deploy /app/tmp
 <% end %>
