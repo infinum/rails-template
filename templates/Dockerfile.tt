@@ -68,13 +68,13 @@ COPY --chown=deploy:deploy Gemfile* /app/
 RUN bundle install && \
   rm -rf ~/.bundle/ ${BUNDLE_PATH}/ruby/*/cache ${BUNDLE_PATH}/ruby/*/bundler/gems/*/.git<% if uses_bootsnap? %> && \
   bundle exec bootsnap precompile --gemfile<% end %>
-
+<% unless skip_asset_pipeline? %>
 COPY --chown=deploy:deploy . /app<% if uses_node? %>
 COPY --chown=deploy:deploy --from=builder /app/node_modules /app/node_modules<% end %>
 ARG RAILS_ENV=production
 RUN --mount=type=secret,id=app-secrets,target=.env \
   bundle exec rails assets:precompile
-
+<% end %>
 FROM base AS deploy
 ARG RAILS_ENV=production
 ARG COMMIT_SHA
