@@ -36,7 +36,7 @@ services:
 
   web:
     <<: *backend
-    command: ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]<% if uses_node? %>
+    command: ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]<% unless skip_asset_pipeline? %>
     depends_on:
     - js
     - css<% end %>
@@ -73,15 +73,14 @@ services:
       interval: 1s
       timeout: 3s
       retries: 30
-  <% if uses_node? %>
+  <% unless skip_asset_pipeline? %>
   js:
     <<: *backend
     command: ["yarn", "build", "--watch"]
 
   css:
     <<: *backend
-    command: ['yarn', 'build:css', '--watch']
-  <% end %>
+    command: ['yarn', 'build:css', '--watch']<% end %>
 volumes:<% if uses_pg? %>
   postgres:<% end %>
   redis:
