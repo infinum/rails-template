@@ -14,7 +14,7 @@ on:
 jobs:
   build-test-image-and-run-checks:
     name: Build test image and run checks
-    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.1.2
+    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-command.yml@v0.5.1
     with:<% if uses_pg? %>
       postgres_version: '13.7'
       postgres_user: postgres
@@ -22,7 +22,7 @@ jobs:
       timeout_minutes: 5
       image_target: ci
       image_tags: <%= app_name %>
-      checks_command: |
+      run_command: |
         docker run \<% if uses_pg? %>
           --env DATABASE_HOST=127.0.0.1 \
           --env DATABASE_PORT=5432 \
