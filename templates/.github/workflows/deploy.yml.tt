@@ -52,6 +52,8 @@ jobs:
       aws_ecr_region: ${{ needs.context.outputs.aws_ecr_region }}
       aws_ecr_account_id: ${{ needs.context.outputs.aws_ecr_account_id }}
       target: deploy
+      build_args: |
+        COMMIT_SHA=${{ input.git_ref }}
       secret_files: |
         app-secrets=sample.env
       git_ref: ${{ inputs.git_ref }}

@@ -8,6 +8,7 @@ append_to_file 'Gemfile', after: /gem "rails".*\n/ do
 
     gem 'dotenv'
     gem 'bugsnag'
+    gem 'infinum_app_revision'
     gem 'pry-byebug'
     gem 'pry-rails'
     gem 'strong_migrations'
