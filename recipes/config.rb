@@ -18,3 +18,11 @@ environment <<~HEREDOC, env: :development
     Bullet.add_footer = true
   end
 HEREDOC
+
+insert_into_file 'config/application.rb', before: /  end\nend\Z/ do
+  <<~RUBY.indent(4)
+
+    # Report app revision via X-App-Revision header
+    config.middleware.use InfinumAppRevision::Middleware, version_provider: InfinumAppRevision::VersionProvider::Docker.new
+  RUBY
+end
