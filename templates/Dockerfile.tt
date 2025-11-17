@@ -66,6 +66,7 @@ RUN bundle install && \
 
 FROM base AS deploy
 ARG RAILS_ENV=production
+ARG COMMIT_SHA
 COPY --chown=deploy:deploy --from=deploy-base ${BUNDLE_PATH} ${BUNDLE_PATH}<% if uses_bootsnap? %>
 COPY --chown=deploy:deploy --from=deploy-base /app/tmp/cache/bootsnap /app/tmp/cache/bootsnap<% end %><% if uses_node? %>
 COPY --chown=deploy:deploy --from=builder /usr/local/bin/node /usr/local/bin/node<% end %>
@@ -75,6 +76,8 @@ RUN --mount=type=secret,id=app-secrets,target=.env \
 RUN bundle exec bootsnap precompile --gemfile app/ lib/ \
   && chown -R deploy:deploy /app/tmp
 <% end %>
+RUN mkdir private && echo '{"revision":"'$COMMIT_SHA'","timestamp":"'$(date --iso-8601=seconds)'"}' > private/version.json
+
 USER deploy
 ENV RAILS_LOG_TO_STDOUT=true
 
