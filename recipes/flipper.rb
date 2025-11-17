@@ -28,4 +28,5 @@ end
 
 after_bundle do
   rails_command 'generate flipper:setup' if flipper_storage_adapter == FlipperStorageAdapters::ACTIVE_RECORD
+  template 'config/initializers/flipper_ui.rb.tt'
 end
