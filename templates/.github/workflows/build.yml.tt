@@ -14,7 +14,7 @@ on:
 jobs:
   build-test-image-and-run-checks:
     name: Build test image and run checks
-    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.4.0
+    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.5.1
     with:<% if uses_pg? %>
       postgres_version: '13.7'
       postgres_user: postgres
