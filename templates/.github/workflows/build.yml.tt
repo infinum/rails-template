@@ -14,7 +14,7 @@ on:
 jobs:
   build-test-image-and-run-checks:
     name: Build test image and run checks
-    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.1.2
+    uses: infinum/rails-cicd-pipelines/.github/workflows/build-app-image-and-run-checks.yml@v0.5.1
     with:<% if uses_pg? %>
       postgres_version: '13.7'
       postgres_user: postgres
@@ -28,6 +28,7 @@ jobs:
           --env DATABASE_PORT=5432 \
           --env DATABASE_USERNAME=postgres \
           --env DATABASE_PASSWORD=password \<% end %>
+          --env RAILS_ENV=test \
           --network=host \
           --mount type=bind,src="$(pwd)"/sample.env,dst=/app/.env \
           extra \
