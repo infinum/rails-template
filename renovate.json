@@ -1,4 +1,12 @@
 {
   "extends": ["config:base"],
-  "docker": { "enabled": true }
+  "docker": {
+    "enabled": true
+  },
+  "dockerfile": {
+    "enabled": true
+  },
+  "docker-compose": {
+    "enabled": true
+  }
 }
