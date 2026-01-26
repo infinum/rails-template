@@ -59,6 +59,8 @@ else
   end
 end
 
+append_to_file 'Gemfile', "  gem 'dox'\n", after: /group :test do\n/ if generate_docs
+
 append_to_file 'Gemfile' do
   <<~HEREDOC
 

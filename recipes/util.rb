@@ -23,6 +23,9 @@ self.class.class_eval do
 
   # @return [String]
   attr_reader :commit_msg
+
+  # @return [Boolean]
+  attr_accessor :generate_docs
 end
 
 # @param [String] adapter

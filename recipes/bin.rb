@@ -13,5 +13,10 @@ chmod 'bin/ci-checks', 0o755, verbose: false
 template 'bin/remote.tt'
 chmod 'bin/remote', 0o755, verbose: false
 
+if api_mode? && (self.generate_docs = yes?('Generate API documentation? [Default: no]', :green))
+  copy_file 'bin/build-docs', force: true
+  chmod 'bin/build-docs', 0o755, verbose: false
+end
+
 # Needed for `bundle install` which is triggered from Rails application generator
 run 'cp sample.env .env'

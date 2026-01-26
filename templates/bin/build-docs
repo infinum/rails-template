@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o pipefail
+set -o nounset
+
+# TODO: Replace with actual documentation generation
+
+mkdir -p public/api/v1/docs
+echo "<html><body><h1>API Documentation</h1></body></html>" > public/api/v1/docs/index.html
