@@ -20,6 +20,7 @@ require 'bundler/setup'
 Bundler.require
 
 require 'aruba/rspec'
+require 'capybara/rspec'
 
 Dir.glob('support/**/*.rb', base: __dir__).each { require it }
 
@@ -106,4 +107,5 @@ RSpec.configure do |config|
 
   config.include TestHelpers::Command
   config.include TestHelpers::Git
+  config.include TestHelpers::Scenarios
 end
